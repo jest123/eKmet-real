@@ -55,10 +55,10 @@ import './index.css'
           <div>
             {(backendData.map((item) => (
             <div className='zival'>
-                  <img src="./image.png" alt="Slika zivali"></img>
-                  <h2>{item.ZivalID}</h2>
-                  <h4>{item.SPOL}</h4>
-                  <h4>{(new Date(item.DatumRojstva*1000)).toLocaleDateString()}</h4>
+                  <img src="./image.png" alt="Slika zivali" className='zivalImg'></img>
+                  <b>{item.ZivalID}</b>
+                  <p>{item.SPOL}</p>
+                  <p>{(new Date(item.DatumRojstva*1000)).toLocaleDateString()}</p>
             </div>
             )))}
           </div>

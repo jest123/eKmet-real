@@ -48,9 +48,12 @@ background-color: #111;
   padding:10px;
   border-radius: 15px;
   background: #D9D9D9;
-  width:10%;
+  width:fit-content;
+  max-width: 10%;
+  min-width: 5%;
   display: inline-block;
   margin:10px;
+  justify-content: center;
 }
 img{
   width:80%;
@@ -58,6 +61,13 @@ img{
   margin:auto;
   justify-content: center;
   display:block;
+}
+div.zival > *{
+  width: fit-content;
+  max-width: 80%;
+  height: fit-content;
+  max-height: 80%;
+  overflow: hidden;
 }
 #add{
   position:sticky;
@@ -85,4 +95,7 @@ img{
   right:10px;
   width:25px;
   height:25px;
+}
+div.zival > p,b{
+  font-size: 20px;
 }
