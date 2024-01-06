@@ -11,7 +11,7 @@ var con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "volos"
+    database: "ekmet"
   });
   app.set('view engine', 'ejs');
   con.connect(function(err) {
@@ -24,7 +24,9 @@ app.get('/',(req,res)=>{
 })
 app.get('/list',(req,res)=>{
     i++;
-    console.log((Date.toString)+" Request");
+    let date=new Date();
+    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+    console.log("["+i+"]"+date.toLocaleString()+" request from "+ip);
     sql="select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva from zivali;";
     con.query(sql, function (err, response) {
         if (err) throw err;
@@ -32,12 +34,15 @@ app.get('/list',(req,res)=>{
     });
 })
 app.post('/add',urlencodedParser,(req,res)=>{
-    sql="insert into Zivali(ZivalID,SPOL,PASMA,DatumRojstva,Tip,Lastnik) VALUES('"+req.body.ZivalID+"','"+req.body.spol+"','"+req.body.Pasma+"','"+req.body.DatumRojstva+"','Govedo',100223065);";
+    sql="insert into Zivali(ZivalID,Spol,Pasma,DatumRojstva,Tip,Lastnik) VALUES('"+req.body.ZivalID+"','"+req.body.spol+"','"+req.body.Pasma+"','"+req.body.DatumRojstva+"','Govedo',100223065);";
     con.query(sql, function (err, response) {
       if (err) throw err;
+      let date=new Date();
+      let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+      console.log(req.body.ZivalID+" dodana iz "+ip+" ob "+date.toLocaleString());
+      console.log(typeof req.body.Pasma);
       res.statusCode=200;
-      res.json(response);
+      res.redirect("http://localhost:5173");
   });
 })
 app.listen(5000,"0.0.0.0",()=>console.log("Server dela na portu 5000"));
-

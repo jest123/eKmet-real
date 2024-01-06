@@ -3,55 +3,54 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
-  class AddButton extends React.Component{
-      handleClick(){
-            return <AddForm/>;
-      }
-      render(){
+
+  function AddButton(){
+    const [isShown, setShown] = useState(false);  
         return (
-          <img src="/src/plus.png" id="add" onclick={()=>this.handleClick()}></img>
+          <>
+          {isShown ? <AddForm /> : null}
+          <img src="/src/plus.png" id="add" onClick={() => setShown(!isShown)}></img>
+          </>
         );
-      }
     }
-    class AddForm extends React.Component{
-      render(){
-        return(
-          <div className='addDiv'>
-              <form method='POST' action="http://localhost:5000/add">
-                  <label for="ZivalID">Ušesna številka:</label><br/>
-                  <input name="ZivalID" placeholder='Ušesna številka'></input><br/>
-                  <label for="spol">Spol:</label><br/>
-                  <select name="spol" size="1"><br/>
-                    <option value="M">Moški</option>
-                    <option value="Z">Ženski</option>
-                  </select><br/>
-                  <label for="Pasma">Pasma:</label><br/>
-                  <input name="Pasma" placeholder='Pasma'></input><br/>
-                  <label for="DatumRojstva">Datum rojstva:</label><br/>
-                  <input name="DatumRojstva" type="date"></input><br/>
-                  <input type="submit"></input>
-              </form>
-          </div>
-        );
-      }
+    function AddForm(){
+      return(
+        <div className='addDiv'>
+            <img src='./public/exit.png' id="exit" onClick={() => {document.getElementById("root").removeChild(document.getElementsByClassName("addDiv")[0]);}}></img>
+            <form method='POST' action="http://localhost:5000/add">
+                <label >Ušesna številka:</label><br/>
+                <input name="ZivalID" placeholder='Ušesna številka' required></input><br/>
+                <label >Spol:</label><br/>
+                <select name="spol" size="1" required>
+                  <option value="M">Moški</option>
+                  <option value="Z">Ženski</option>
+                </select><br/>
+                <label >Pasma:</label><br/>
+                <input name="Pasma" placeholder='Pasma'></input><br/>
+                <label >Datum rojstva:</label><br/>
+                <input name="DatumRojstva" type="date" required></input><br/>
+                <label >Oče:</label><br/>
+                <input name="Oce"></input><br/>
+                <label >Mati:</label><br/>
+                <input name="Mati"></input><br/>
+                <label >Ime:</label><br/>
+                <input name="Ime"></input><br/>
+                <input type="submit"></input>
+            </form>
+        </div>
+      );
     }
-function fetchData(){
-      const [backendData, setBackendData] = useState([{}]);
-      useEffect(()=>{
-        fetch(`http://localhost:5000/list`).then(
-          response => response.json()
-          ).then(
-            data=>{
-              setBackendData(data);
-            }   
-          )
-      },[]);
-      return data;
-            
-}
- class List extends React.Component{
-      backendData = fetchData();
-      render(){
+ function List(){
+  const [backendData, setBackendData] = useState([{}]);
+  useEffect(()=>{
+    fetch(`http://localhost:5000/list`).then(
+      response => response.json()
+      ).then(
+        data=>{
+          setBackendData(data);
+        }   
+      )
+  },[]);
         return (
           <div>
             {(backendData.map((item) => (
@@ -65,7 +64,9 @@ function fetchData(){
           </div>
         ); 
       };
-}
-ReactDOM.createRoot(document.getElementById('root')).render(
-      <List/>
+      const root=ReactDOM.createRoot(document.getElementById('root')).render(
+      <>
+        <List/>
+        <AddButton/>
+      </>
  )
