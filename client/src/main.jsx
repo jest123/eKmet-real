@@ -13,6 +13,8 @@ import {
 import Details from './Details.jsx'
 import AddForm from './AddForm.jsx'
 import List from './list.jsx'
+import RegistrationForm from './registrationForm.jsx'
+import LoginForm from './LoginForm.jsx'
 
 
 function Navbar(){
@@ -79,9 +81,11 @@ const root = ReactDOM.createRoot(document.getElementById('root')).render(
   <Navbar/>
   
   <Routes>
+    <Route path="/" element={<><LoginForm/><br/>Še nimaš računa?<br/><a href="http://localhost:5173/register">Ustvari račun</a></>}/>
+    <Route path="/register" element={<><RegistrationForm/><br/>Že imaš račun?<br/><a href="http://localhost:5173/">Prijavi se</a></>}/>
     <Route path="/:ID" element={<Details/>}/>
-    <Route path="/" element={<List/>}></Route>
+    <Route path="/list" element={<><List/><AddButton /></>}></Route>
   </Routes>
-    <AddButton />
+    
   </BrowserRouter>
 )

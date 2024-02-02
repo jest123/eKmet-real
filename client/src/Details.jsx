@@ -1,4 +1,5 @@
 import React, {useEffect,useState} from 'react'
+import Cookies from 'js-cookie';
 import {
     Link,
     useParams
@@ -7,8 +8,13 @@ export default function Details(props){
     let  {ID}=useParams()
     const [backendData, setBackendData] = useState([{}]);
     console.log(ID);
+    let server="http://localhost:5000/details?ID="+ID;
+    const options = {
+      method: 'POST',
+      headers: {'Authorization':Cookies.get("token") }
+  };
     useEffect(() => {
-      fetch(`http://localhost:5000/details?ID=`+ID).then(
+      fetch(server,options).then(
         response => response.json()
       ).then(
         data => {

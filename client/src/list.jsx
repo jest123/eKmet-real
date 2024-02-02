@@ -1,10 +1,16 @@
 import React, {useEffect,useState} from 'react'
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 export default function List() {
     const [backendData, setBackendData] = useState([{}]);
-    
+    let server="http://localhost:5000/list";
+  const options = {
+      method: 'POST',
+      headers: {'Authorization':Cookies.get("token") }
+  };
     useEffect(() => {
-      fetch(`http://localhost:5000/list`).then(
+      fetch(server,options).then(
         response => response.json()
       ).then(
         data => {
@@ -40,6 +46,7 @@ export default function List() {
         )))}
         
       </div>
+      
       
     );
   };
