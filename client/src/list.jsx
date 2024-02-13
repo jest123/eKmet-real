@@ -19,7 +19,6 @@ export default function List() {
       )
       setBackendData([{ZivalID:2001,SPOL:'M'}]);
     }, []);
-    console.log(backendData);
     backendData.forEach((element)=>{if(element.SPOL=='Z')element.SPOL='Ženski';else{element.SPOL="Moški"}})
     return (
       

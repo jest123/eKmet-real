@@ -7,7 +7,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const verifyToken = require('./middleware/authMiddleware');
 var cookieParser = require('cookie-parser');
-const util = require('util')
+const util = require('util');
+const { verify } = require('crypto');
 app.use(express.json());
 app.use(cookieParser());
 let i = 0
@@ -50,22 +51,20 @@ app.post('/list', verifyToken, (req, res) => {
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip);
   console.log(req.KMGMID);
-  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva from zivali WHERE Lastnik='"+req.KMGMID+"';";
+  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva from zivali WHERE Lastnik='" + req.KMGMID + "';";
   con.query(sql, function (err, response) {
     if (err) throw err;
     res.json(response);
   });
 })
-app.post('/add', verifyToken,urlencodedParser,  (req, res) => {
+app.post('/add', verifyToken, urlencodedParser, (req, res) => {
   let oce;
-  console.log(req.body)
-  console.log("MMMMM"+req.body.ZivalID);
   if (req.body.Oce === undefined) {
     oce = "NULL";
   }
   else
     oce = req.body.Oce;
-  sql = "insert into Zivali(ZivalID,Spol,Pasma,DatumRojstva,Tip,Lastnik,Ime,Mati,Oce) VALUES('" + req.body.ZivalID + "','" + req.body.spol + "','" + req.body.Pasma + "','" + req.body.DatumRojstva + "','Govedo','"+req.KMGMID+"','" + req.body.Ime + "','" + req.body.Mati + "','" + oce + "');";
+  sql = "insert into Zivali(ZivalID,Spol,Pasma,DatumRojstva,Tip,Lastnik,Ime,Mati,Oce) VALUES('" + req.body.ZivalID + "','" + req.body.spol + "','" + req.body.Pasma + "','" + req.body.DatumRojstva + "','Govedo','" + req.KMGMID + "','" + req.body.Ime + "','" + req.body.Mati + "','" + oce + "');";
   con.query(sql, function (err, response) {
     if (err) throw err;
     let date = new Date();
@@ -81,7 +80,7 @@ app.post('/details', verifyToken, (req, res) => {
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip + " for " + req.query.ID);
-  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva,Ime,Pasma,Oce,Mati from zivali WHERE ZivalID='" + req.query.ID + "' AND Lastnik="+req.KMGMID+";";
+  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva,Ime,Pasma,Oce,Mati from zivali WHERE ZivalID='" + req.query.ID + "' AND Lastnik=" + req.KMGMID + ";";
   con.query(sql, function (err, response) {
     if (err) throw err;
     res.json(response);
@@ -120,7 +119,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
         const token = jwt.sign({ KMGMID: KMGMID }, 'your-secret-key', {
           expiresIn: '1h',
         });
-        res.status(200).cookie('token', token, {expire: 3600000 + Date.now()}).redirect("http://localhost:5173/list");
+        res.status(200).cookie('token', token, { expire: 3600000 + Date.now() }).redirect("http://localhost:5173/list");
       });
 
     });
@@ -128,4 +127,24 @@ app.post('/login', urlencodedParser, async (req, res) => {
     res.status(500).redirect("http://localhost:5173");
   }
 });
+app.post('/addCreda',urlencodedParser,verifyToken,async(req,res)=>{
+  sql = "INSERT INTO Creda(ImeCrede,Opombe,lastnik) VALUES('"+req.body.ImeCrede+"','"+req.body.Opombe+"','"+req.KMGMID+"');";
+    con.query(sql, function (err, response) {
+      console.log("ADDEDD")
+      if(err) throw err;
+      res.status(200).send();
+    })
+    
+});
+app.post('/credaList', urlencodedParser,verifyToken,(req,res)=>{
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip);
+  sql = "SELECT * FROM creda WHERE Lastnik='" + req.KMGMID + "';";
+    con.query(sql, function (err, response) {
+      if(err) throw err;
+      res.status(200).send(response);
+    })
+})
 app.listen(5000, "0.0.0.0", () => console.log("Server dela na portu 5000"));
