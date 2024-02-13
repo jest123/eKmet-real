@@ -15,6 +15,7 @@ import AddForm from './AddForm.jsx'
 import List from './list.jsx'
 import RegistrationForm from './registrationForm.jsx'
 import LoginForm from './LoginForm.jsx'
+import Creda from './crede.jsx'
 
 
 function Navbar(){
@@ -54,11 +55,11 @@ function Navbar(){
       return(
         <>
           <ul className="nav">
-            <li className="navbar"><h3>eKmet logo</h3></li>
-            <li className="navbar"><a className='navi' href="/">Govedo</a></li>
+            <li className="navbar"><h3><a className='navi' href="/">eKmet logo</a></h3></li>
+            <li className="navbar"><a className='navi' href="/list">Govedo</a></li>
             <li className="navbar"><a className='navi' href="/">Drobnica</a></li>
-            <li className="navbar"><a className='navi' href="/crede">Živali</a></li>
-            <li className="navbar"><a className='navi' href="/">Črede</a></li>
+            <li className="navbar"><a className='navi' href="/">Živali</a></li>
+            <li className="navbar"><a className='navi' href="/crede">Črede</a></li>
             <li className="navbar" id="userIcon"><img className="zivalPic" src="/src/user_icon.png"></img></li>
           </ul>
         </>
@@ -85,6 +86,7 @@ const root = ReactDOM.createRoot(document.getElementById('root')).render(
     <Route path="/register" element={<><RegistrationForm/><br/>Že imaš račun?<br/><a href="http://localhost:5173/">Prijavi se</a></>}/>
     <Route path="/:ID" element={<Details/>}/>
     <Route path="/list" element={<><List/><AddButton /></>}></Route>
+    <Route path="/crede" element={<><Creda/></>}></Route>
   </Routes>
     
   </BrowserRouter>
