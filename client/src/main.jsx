@@ -1,5 +1,6 @@
 import React, {useEffect,useState} from 'react'
 import ReactDOM from 'react-dom/client'
+import Cookies from 'js-cookie';
 import App from './App.jsx'
 import './index.css'
 import './script.js'
@@ -20,6 +21,10 @@ import CredaList from './CredaList.jsx'
 
 
 function Navbar(){
+  const routeChange = () =>{ 
+    let path = `http://localhost:5173/`; 
+    navigate(path);
+  }
     const [deviceType, setDeviceType] = useState(null);
     let isMobile;
     if(window.innerWidth<768){
@@ -52,6 +57,7 @@ function Navbar(){
         </>
       );
     }
+
     else{
       return(
         <>
@@ -61,7 +67,7 @@ function Navbar(){
             <li className="navbar"><a className='navi' href="/">Drobnica</a></li>
             <li className="navbar"><a className='navi' href="/">Živali</a></li>
             <li className="navbar"><a className='navi' href="/crede">Črede</a></li>
-            <li className="navbar" id="userIcon"><img className="zivalPic" src="/src/user_icon.png"></img></li>
+            <li className="navbar dropdown" id="userIcon" onClick={()=>{document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";}}><a className='navi' href="/"><img className="zivalPic" src="./public/logout.png"></img></a></li>
           </ul>
         </>
       );
