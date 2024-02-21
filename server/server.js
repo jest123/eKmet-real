@@ -89,7 +89,7 @@ app.post('/add', verifyToken, urlencodedParser, (req, res) => {
     let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
     console.log(req.body.ZivalID + " dodana iz " + ip + " ob " + date.toLocaleString());
     res.statusCode = 200;
-    let server = "http://localhost:5173/";
+    let server = "http://localhost:5173";
     res.redirect(server);
   });
 })
@@ -151,7 +151,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
         const token = jwt.sign({ KMGMID: KMGMID }, 'your-secret-key', {
           expiresIn: '1h',
         });
-        res.status(200).cookie('token', token, { expire: 3600000 + Date.now() }).redirect("http://localhost:5173/list");
+        res.status(200).cookie('token', token, { expire: 3600000 + Date.now() }).redirect("http://localhost:5173"+"/list");
       });
 
     });
@@ -197,7 +197,7 @@ app.post('/update', upload.single("img"), verifyToken, (req, res) => {
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
   let x = JSON.parse(req.body.data)
-  sql = "UPDATE Zivali SET spol='" + x.spol + "',pasma='" + x.pasma + "',ime='" + x.ime + "',mati='" + x.mati + "',oce='" + x.oce + "',credaID='" + x.credaID + "',Opombe='" + x.opombe + "',slika='" + req.file.filename + "' WHERE ZivalID='" + x.zivalID + "';";
+  sql = "UPDATE Zivali SET spol='" + x.spol + "',pasma='" + x.pasma + "',ime='" + x.ime + "',mati='" + x.mati + "',oce='" + x.oce + "',credaID='" + x.credaID + "',Opombe='" + x.opombe + "'"+(req.file!=undefined?",slika='" + req.file.filename + "'":"")+" WHERE ZivalID='" + x.zivalID + "';";
   console.log(sql)
   con.query(sql, function (err, response) {
     if (err) throw err;

@@ -5,13 +5,13 @@ import {
     useParams
 } from "react-router-dom";
 function Creda() {
-    let server = "http://localhost:5000/";
+    let server = import.meta.env.VITE_API;
     const options = {
         method: 'POST',
         headers: { 'Authorization': Cookies.get("token") }
     };
     const AddCreda = function () {
-        let server = "http://localhost:5000/addCreda";
+        let server = import.meta.env.VITE_API+"/addCreda";
         const [formData, setFormData] = useState({
             ImeCrede: '',
             Opombe: '',
@@ -66,7 +66,7 @@ function Creda() {
     const [backendData, setBackendData] = useState([{}]);
     const [details, setDetails] = useState([{}]);
     useEffect(() => {
-        fetch(server + "credaList", options).then(
+        fetch(server + "/credaList", options).then(
             response => response.json()
         ).then(
             data => {

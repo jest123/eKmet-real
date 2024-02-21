@@ -2,7 +2,7 @@ import React, {useEffect,useState} from 'react'
 import Cookies from 'js-cookie';
 
 export default function AddForm(){
-    let server="http://localhost:5000/add";
+    let server=import.meta.env.VITE_API+"/add";
     const [formData, setFormData] = useState({
       ZivalID:'',
       spol:'',

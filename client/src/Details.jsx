@@ -11,7 +11,7 @@ export default function Details(props) {
   const [credaData, setCredaData] = useState([{}]);
   console.log(ID);
   let neki;
-  let server = "http://localhost:5000/";
+  let server = import.meta.env.VITE_API;
   const options = {
     method: 'POST',
     headers: { 'Authorization': Cookies.get("token") }
@@ -29,7 +29,7 @@ export default function Details(props) {
     slika:''
   });
   useEffect(() => {
-    fetch(server + "details?ID=" + ID, options).then(
+    fetch(server + "/details?ID=" + ID, options).then(
       response => response.json()
     ).then(
       data => {
@@ -53,7 +53,7 @@ export default function Details(props) {
     )
   }, []);
   useEffect(() => {
-    fetch(server + "credaList", options).then(
+    fetch(server + "/credaList", options).then(
       response => response.json()
     ).then(
       data => {
@@ -95,7 +95,7 @@ export default function Details(props) {
     }
     try {
       console.log("AAAA" + options.body.ZivalID);
-      const response = await fetch(server + "update", options);
+      const response = await fetch(server + "/update", options);
       const data = await response.json();
       console.log('Server response:', data);
     } catch (error) {

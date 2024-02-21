@@ -10,7 +10,7 @@ export default function Details(props) {
   const [backendData, setBackendData] = useState([{}]);
   console.log(ID);
   let neki;
-  let server = "http://localhost:5000/";
+  let server = import.meta.env.VITE_API;
   let body={credaID:ID}
   const headers = new Headers();
             headers.append('Content-Type', 'application/json');
@@ -21,7 +21,7 @@ export default function Details(props) {
     body: JSON.stringify(body)
   };
   useEffect(() => {
-    fetch(server+"creda",options).then(
+    fetch(server+"/creda",options).then(
       response => response.json()
     ).then(
       data => {

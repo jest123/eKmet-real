@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 export default function List() {
+  
     const [backendData, setBackendData] = useState([{}]);
-    let server="http://localhost:5000/list";
+    let server=import.meta.env.VITE_API+"/list";
+    
   const options = {
       method: 'POST',
       headers: {'Authorization':Cookies.get("token") }

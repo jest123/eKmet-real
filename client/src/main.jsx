@@ -22,7 +22,7 @@ import CredaList from './CredaList.jsx'
 
 function Navbar(){
   const routeChange = () =>{ 
-    let path = `http://localhost:5173/`; 
+    let path = import.meta.env.VITE_SITE; 
     navigate(path);
   }
     const [deviceType, setDeviceType] = useState(null);
@@ -33,7 +33,7 @@ function Navbar(){
     else{
       isMobile=false;
     }
-    console.log(isMobile);
+    console.log(import.meta.env.VITE_HOST);
     if(isMobile){
       return(
         <>
@@ -89,8 +89,8 @@ const root = ReactDOM.createRoot(document.getElementById('root')).render(
   <Navbar/>
   
   <Routes>
-    <Route path="/" element={<><LoginForm/><br/>Še nimaš računa?<br/><a href="http://localhost:5173/register">Ustvari račun</a></>}/>
-    <Route path="/register" element={<><RegistrationForm/><br/>Že imaš račun?<br/><a href="http://localhost:5173/">Prijavi se</a></>}/>
+    <Route path="/" element={<><LoginForm/><br/>Še nimaš računa?<br/><a href={import.meta.env.VITE_SITE+"/register"}>Ustvari račun</a></>}/>
+    <Route path="/register" element={<><RegistrationForm/><br/>Že imaš račun?<br/><a href={import.meta.env.VITE_SITE+"/"}>Prijavi se</a></>}/>
     <Route path="/:ID" element={<Details/>}/>
     <Route path="/list" element={<><List/><AddButton /></>}></Route>
     <Route path="/crede" element={<><Creda/></>}></Route>
