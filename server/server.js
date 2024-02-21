@@ -9,11 +9,22 @@ const verifyToken = require('./middleware/authMiddleware');
 var cookieParser = require('cookie-parser');
 const util = require('util');
 const { verify } = require('crypto');
+const fs = require('fs');
 app.use(express.json());
 app.use(cookieParser());
 let i = 0
 app.use(cors());
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+const upload = multer({ storage: storage });
 let db_config = {
   host: "localhost",
   user: "root",
@@ -41,6 +52,13 @@ function handleDisconnect() {
   });
 }
 handleDisconnect();
+// util function to get the base64 encoded string for passed image.
+const readFileAsync = util.promisify(fs.readFile);
+async function getImageBase64(filePath) {
+  const image = await readFileAsync(filePath);
+  const buffer = Buffer.from(image);
+  return `data:image/png;base64,${buffer.toString("base64")}`;
+}
 app.get('/', (req, res) => {
   console.log('HI');
   res.render('index', { text: 'WORLDD' });
@@ -71,7 +89,7 @@ app.post('/add', verifyToken, urlencodedParser, (req, res) => {
     let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
     console.log(req.body.ZivalID + " dodana iz " + ip + " ob " + date.toLocaleString());
     res.statusCode = 200;
-    let server = "http://localhost:5173";
+    let server = "http://localhost:5173/";
     res.redirect(server);
   });
 })
@@ -80,10 +98,24 @@ app.post('/details', verifyToken, (req, res) => {
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip + " for " + req.query.ID);
-  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva,Ime,Pasma,Oce,Mati from zivali WHERE ZivalID='" + req.query.ID + "' AND Lastnik=" + req.KMGMID + ";";
-  con.query(sql, function (err, response) {
+
+
+
+  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva,Ime,Pasma,Oce,Mati,credaID,Zivali.Opombe,slika from zivali LEFT JOIN creda using(CredaID) WHERE ZivalID='" + req.query.ID + "' AND zivali.Lastnik='" + req.KMGMID + "';";
+  con.query(sql, async function (err, response) {
     if (err) throw err;
-    res.json(response);
+    const form = new FormData();
+    form.append('data', response);
+    if (response[0].slika != undefined) {
+      const imageURI = await getImageBase64("./uploads/" + response[0].slika);
+      res.statusCode=200;
+      res.json({
+        data: response,
+        imageURI: imageURI,
+      });
+    }else{
+    res.json({data:response});
+    }
   });
 })
 app.post('/register', urlencodedParser, async (req, res) => {
@@ -127,24 +159,49 @@ app.post('/login', urlencodedParser, async (req, res) => {
     res.status(500).redirect("http://localhost:5173");
   }
 });
-app.post('/addCreda',urlencodedParser,verifyToken,async(req,res)=>{
-  sql = "INSERT INTO Creda(ImeCrede,Opombe,lastnik) VALUES('"+req.body.ImeCrede+"','"+req.body.Opombe+"','"+req.KMGMID+"');";
-    con.query(sql, function (err, response) {
-      console.log("ADDEDD")
-      if(err) throw err;
-      res.status(200).send();
-    })
-    
+app.post('/addCreda', urlencodedParser, verifyToken, async (req, res) => {
+  sql = "INSERT INTO Creda(ImeCrede,Opombe,lastnik) VALUES('" + req.body.ImeCrede + "','" + req.body.Opombe + "','" + req.KMGMID + "');";
+  con.query(sql, function (err, response) {
+    console.log("ADDEDD")
+    if (err) console.log("ERROR " + err);
+    res.status(200).send();
+  })
+
 });
-app.post('/credaList', urlencodedParser,verifyToken,(req,res)=>{
+app.post('/credaList', urlencodedParser, verifyToken, (req, res) => {
   i++;
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-  console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip);
+  console.log("[" + i + "]" + date.toLocaleString() + " crede request from " + ip);
   sql = "SELECT * FROM creda WHERE Lastnik='" + req.KMGMID + "';";
-    con.query(sql, function (err, response) {
-      if(err) throw err;
-      res.status(200).send(response);
-    })
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+    res.status(200).send(response);
+  })
+})
+app.post('/creda', urlencodedParser, verifyToken, (req, res) => {
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " request creda list from " + ip);
+  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva from zivali WHERE Lastnik='" + req.KMGMID + "' AND CredaID='" + req.body.credaID + "';";
+  console.log(sql);
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+    res.json(response);
+  });
+})
+app.post('/update', upload.single("img"), verifyToken, (req, res) => {
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
+  let x = JSON.parse(req.body.data)
+  sql = "UPDATE Zivali SET spol='" + x.spol + "',pasma='" + x.pasma + "',ime='" + x.ime + "',mati='" + x.mati + "',oce='" + x.oce + "',credaID='" + x.credaID + "',Opombe='" + x.opombe + "',slika='" + req.file.filename + "' WHERE ZivalID='" + x.zivalID + "';";
+  console.log(sql)
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+    res.send("MHMMM");
+  })
 })
 app.listen(5000, "0.0.0.0", () => console.log("Server dela na portu 5000"));

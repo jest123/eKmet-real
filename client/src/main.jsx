@@ -16,6 +16,7 @@ import List from './list.jsx'
 import RegistrationForm from './registrationForm.jsx'
 import LoginForm from './LoginForm.jsx'
 import Creda from './crede.jsx'
+import CredaList from './CredaList.jsx'
 
 
 function Navbar(){
@@ -55,7 +56,7 @@ function Navbar(){
       return(
         <>
           <ul className="nav">
-            <li className="navbar"><h3><a className='navi' href="/">eKmet logo</a></h3></li>
+            <li className="navbar"><h3><a className='navi' href="/" id="home">eKmet logo</a></h3></li>
             <li className="navbar"><a className='navi' href="/list">Govedo</a></li>
             <li className="navbar"><a className='navi' href="/">Drobnica</a></li>
             <li className="navbar"><a className='navi' href="/">Živali</a></li>
@@ -87,6 +88,7 @@ const root = ReactDOM.createRoot(document.getElementById('root')).render(
     <Route path="/:ID" element={<Details/>}/>
     <Route path="/list" element={<><List/><AddButton /></>}></Route>
     <Route path="/crede" element={<><Creda/></>}></Route>
+    <Route path="/crede/:ID" element={<><CredaList/></>}></Route>
   </Routes>
     
   </BrowserRouter>

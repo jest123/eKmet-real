@@ -86,7 +86,7 @@ function Creda() {
     return (
         <>
             {(backendData.map((item) => (
-                <Link to={`/creda/${item.credaid}`}>
+                <Link to={`/crede/${item.CredaID}`}>
                     <div className='creda' id={item.ImeCrede}>
                         <b>{item.ImeCrede}</b>
                         <p>{item.Opombe}</p>
