@@ -124,23 +124,14 @@ const root = ReactDOM.createRoot(document.getElementById('root')).render(
   
   
   <Routes>
-<<<<<<< HEAD
-    <Route path="/" element={<><LoginForm/></>}></Route>
-    <Route path="/register" element={<><RegistrationForm/><br/>Že imaš račun?<br/><a href={import.meta.env.VITE_SITE+"/"}>Prijavi se</a></>}/>
-    <Route path="/:ID" element={<Details/>}/>
-    <Route path="/list" element={<><List/><AddButton /></>}></Route>
-    <Route path="/crede" element={<><Creda/></>}></Route>
-    <Route path="/crede/:ID" element={<><CredaList/></>}></Route>
-    <Route path='/reset' element={<><ResetForm/></>}></Route>
-    <Route path="/reset/:token"element={<><ResetPass/></>}></Route>
-=======
-    <Route path="/" element={<><LoginNavbar/><LoginForm/><br/>Še nimaš računa?<br/><a href={import.meta.env.VITE_SITE+"/register"}>Ustvari račun</a></>}/>
-    <Route path="/register" element={<><LoginNavbar/><RegistrationForm/><br/>Že imaš račun?<br/><a href={import.meta.env.VITE_SITE+"/"}>Prijavi se</a></>}/>
+    <Route path="/" element={<><LoginNavbar/><LoginForm/></>}/>
+    <Route path="/register" element={<><LoginNavbar/><RegistrationForm/></>}/>
     <Route path="/:ID" element={<><Navbar/><Details/></>}/>
     <Route path="/list" element={<><Navbar/><List/><AddButton /></>}></Route>
     <Route path="/crede" element={<><Navbar/><Creda/></>}></Route>
     <Route path="/crede/:ID" element={<><Navbar/><CredaList/></>}></Route>
->>>>>>> b0adcc4fd7b66ee8a734aca169f3a09aee4e5935
+    <Route path='/reset' element={<><LoginNavbar/><ResetForm/></>}></Route>
+    <Route path='/reset/:token' element={<><LoginNavbar/><ResetPass/></>}></Route>
   </Routes>
     
   </BrowserRouter>

@@ -109,9 +109,6 @@ app.post('/details', verifyToken, (req, res) => {
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip + " for " + req.query.ID);
-
-
-
   sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva,Ime,Pasma,Oce,Mati,credaID,Zivali.Opombe,slika from zivali LEFT JOIN creda using(CredaID) WHERE ZivalID='" + req.query.ID + "' AND zivali.Lastnik='" + req.KMGMID + "';";
   con.query(sql, async function (err, response) {
     if (err) throw err;
@@ -215,24 +212,20 @@ app.post('/update', upload.single("img"), verifyToken, (req, res) => {
     res.send("MHMMM");
   })
 })
-<<<<<<< HEAD
+
 app.post("/reset", urlencodedParser, (req, res) => {
-=======
-app.post("/delete",urlencodedParser,verifyToken,(req,res)=>{
->>>>>>> b0adcc4fd7b66ee8a734aca169f3a09aee4e5935
   i++;
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
-<<<<<<< HEAD
   const token = Math.floor(Math.random() * 8999) + 1000;
+  let found=false;
   sql = "select user from uporabniki;"
   con.query(sql, function (err, response) {
     if (err) throw err;
     let users = response;
     for (let i = 0; i < users.length; i++) {
       if (users[i].user == req.body.email) {
-        console.log("MM");
         sql = "INSERT INTO reset VALUES('" + req.body.email + "','" + token + "');"
         con.query(sql, function (err, response) {
           if (err) throw err;
@@ -249,33 +242,60 @@ app.post("/delete",urlencodedParser,verifyToken,(req,res)=>{
               console.log("Email sent: ", info.response);
             }
           });
-          res.redirect("http://localhost:5173/");
-          return;
         })
+        found = true;
+        res.redirect("http://localhost:5173/");
+        break;
       }
+      
+    }
+    if (!found) {
+      res.status(401).json({ error: 'Authentication failed' });
     }
   })
+  
   return;
 })
-app.post("/resetPass", urlencodedParser, (req, res) => {
-  
-})
-app.post("/users",urlencodedParser,(req,res)=>{
-  sql = "select token from reset;"
-  con.query(sql, function (err, response) {
-    for (let i = 0; i < response.length; i++) {
-      if (response[i].token == req.body.token)
-        res.send("1");
-    }
-  })
-  res.send("0");
-=======
-  sql = "DELETE FROM zivali WHERE ZivalID='"+req.body.ZivalID+"';";
-  console.log(sql)
+app.post("/delete", urlencodedParser, verifyToken, (req, res) => {
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " delete request from " + ip);
+  sql = "DELETE FROM zivali WHERE ZivalID='" + req.body.zivalID + "';";
   con.query(sql, function (err, response) {
     if (err) throw err;
-    res.redirect("http://localhost:5173/list");
+
   })
->>>>>>> b0adcc4fd7b66ee8a734aca169f3a09aee4e5935
+  res.redirect("http://localhost:5173/list");
 })
+app.post("/resetPass", urlencodedParser, async (req, res) => {
+  const hashedPassword = await bcrypt.hash(req.body.pass, 10);
+  sql = "SELECT * FROM reset INNER JOIN uporabniki ON reset.email=uporabniki.user WHERE token=" + req.body.token + ";";
+  con.query(sql, function (err, response) {
+    sql = "UPDATE uporabniki SET pass='" + hashedPassword + "' WHERE KMGMID='" + response[0].KMGMID + "';";
+    console.log(sql);
+    con.query(sql, function (err, respo) {
+      if (err) throw err;
+      res.redirect("http://localhost:5173/");
+    });
+
+  });
+  sql = "DELETE FROM reset WHERE token='" + req.body.token + "';";
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+  });
+})
+app.post("/users", urlencodedParser, (req, res) => {
+  sql = "SELECT token FROM reset;";
+  con.query(sql, function (err, response) {
+    let found = false;
+    for (let i = 0; i < response.length; i++) {
+      if (response[i].token == req.query.token) {
+        found = true;
+        break;
+      }
+    }
+    res.send(found);
+  });
+});
 app.listen(5000, "0.0.0.0", () => console.log("Server dela na portu 5000"));
