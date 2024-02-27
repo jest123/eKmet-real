@@ -61,7 +61,25 @@ export default function Details(props) {
       }
     )
   }, []);
-
+  const deleteRow= async (e)=>{
+    e.preventDefault();
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', Cookies.get("token"));
+    const options={
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(formData),
+    }
+    try {
+      console.log("AAAA"+options.body.ZivalID);
+      const response = await fetch(server+"/delete",options);
+      const data = await response.json();
+      console.log('Server response:', data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -162,7 +180,9 @@ export default function Details(props) {
         </select><br />
         <label>Opombe:</label><br />
         <input name="opombe" value={formData.opombe} onChange={handleChange}></input> <br />
-        <input type="submit"></input>
+        <input type="submit"></input><br/><br/>
+        <button color='red' onClick={deleteRow}>BRIŠI</button>
+
       </form>
     </>
   )

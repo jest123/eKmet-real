@@ -204,4 +204,16 @@ app.post('/update', upload.single("img"), verifyToken, (req, res) => {
     res.send("MHMMM");
   })
 })
+app.post("/delete",urlencodedParser,verifyToken,(req,res)=>{
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
+  sql = "DELETE FROM zivali WHERE ZivalID='"+req.body.ZivalID+"';";
+  console.log(sql)
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+    res.redirect("http://localhost:5173/list");
+  })
+})
 app.listen(5000, "0.0.0.0", () => console.log("Server dela na portu 5000"));
