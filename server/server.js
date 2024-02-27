@@ -215,11 +215,16 @@ app.post('/update', upload.single("img"), verifyToken, (req, res) => {
     res.send("MHMMM");
   })
 })
+<<<<<<< HEAD
 app.post("/reset", urlencodedParser, (req, res) => {
+=======
+app.post("/delete",urlencodedParser,verifyToken,(req,res)=>{
+>>>>>>> b0adcc4fd7b66ee8a734aca169f3a09aee4e5935
   i++;
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
+<<<<<<< HEAD
   const token = Math.floor(Math.random() * 8999) + 1000;
   sql = "select user from uporabniki;"
   con.query(sql, function (err, response) {
@@ -264,5 +269,13 @@ app.post("/users",urlencodedParser,(req,res)=>{
     }
   })
   res.send("0");
+=======
+  sql = "DELETE FROM zivali WHERE ZivalID='"+req.body.ZivalID+"';";
+  console.log(sql)
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+    res.redirect("http://localhost:5173/list");
+  })
+>>>>>>> b0adcc4fd7b66ee8a734aca169f3a09aee4e5935
 })
 app.listen(5000, "0.0.0.0", () => console.log("Server dela na portu 5000"));
