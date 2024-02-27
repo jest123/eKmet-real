@@ -12,6 +12,7 @@ const { verify } = require('crypto');
 const fs = require('fs');
 app.use(express.json());
 app.use(cookieParser());
+const nodemailer = require("nodemailer");
 let i = 0
 app.use(cors());
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -31,6 +32,16 @@ let db_config = {
   password: "",
   database: "ekmet"
 }
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "mail.ekmet@gmail.com",
+    pass: "azth dufn owgg qeva",
+  },
+});
 var con = mysql.createConnection(db_config);
 app.set('view engine', 'ejs');
 function handleDisconnect() {
@@ -108,13 +119,13 @@ app.post('/details', verifyToken, (req, res) => {
     form.append('data', response);
     if (response[0].slika != undefined) {
       const imageURI = await getImageBase64("./uploads/" + response[0].slika);
-      res.statusCode=200;
+      res.statusCode = 200;
       res.json({
         data: response,
         imageURI: imageURI,
       });
-    }else{
-    res.json({data:response});
+    } else {
+      res.json({ data: response });
     }
   });
 })
@@ -151,7 +162,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
         const token = jwt.sign({ KMGMID: KMGMID }, 'your-secret-key', {
           expiresIn: '1h',
         });
-        res.status(200).cookie('token', token, { expire: 3600000 + Date.now() }).redirect("http://localhost:5173"+"/list");
+        res.status(200).cookie('token', token, { expire: 3600000 + Date.now() }).redirect("http://localhost:5173" + "/list");
       });
 
     });
@@ -197,11 +208,61 @@ app.post('/update', upload.single("img"), verifyToken, (req, res) => {
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
   let x = JSON.parse(req.body.data)
-  sql = "UPDATE Zivali SET spol='" + x.spol + "',pasma='" + x.pasma + "',ime='" + x.ime + "',mati='" + x.mati + "',oce='" + x.oce + "',credaID='" + x.credaID + "',Opombe='" + x.opombe + "'"+(req.file!=undefined?",slika='" + req.file.filename + "'":"")+" WHERE ZivalID='" + x.zivalID + "';";
+  sql = "UPDATE Zivali SET spol='" + x.spol + "',pasma='" + x.pasma + "',ime='" + x.ime + "',mati='" + x.mati + "',oce='" + x.oce + "',credaID='" + x.credaID + "',Opombe='" + x.opombe + "'" + (req.file != undefined ? ",slika='" + req.file.filename + "'" : "") + " WHERE ZivalID='" + x.zivalID + "';";
   console.log(sql)
   con.query(sql, function (err, response) {
     if (err) throw err;
     res.send("MHMMM");
   })
+})
+app.post("/reset", urlencodedParser, (req, res) => {
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
+  const token = Math.floor(Math.random() * 8999) + 1000;
+  sql = "select user from uporabniki;"
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+    let users = response;
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].user == req.body.email) {
+        console.log("MM");
+        sql = "INSERT INTO reset VALUES('" + req.body.email + "','" + token + "');"
+        con.query(sql, function (err, response) {
+          if (err) throw err;
+          const mailOptions = {
+            from: "mail.ekmet@gmail.com",
+            to: req.body.email,
+            subject: "Ponastavitev gesla",
+            html: "<html><body>Pozdravljeni, pošiljamo povezavo za ponastavitev gesla <br/> <a href='http://localhost:5173/reset/" + token + "'>Ponastavitev gesla</a></body></html>",
+          };
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error("Error sending email: ", error);
+            } else {
+              console.log("Email sent: ", info.response);
+            }
+          });
+          res.redirect("http://localhost:5173/");
+          return;
+        })
+      }
+    }
+  })
+  return;
+})
+app.post("/resetPass", urlencodedParser, (req, res) => {
+  
+})
+app.post("/users",urlencodedParser,(req,res)=>{
+  sql = "select token from reset;"
+  con.query(sql, function (err, response) {
+    for (let i = 0; i < response.length; i++) {
+      if (response[i].token == req.body.token)
+        res.send("1");
+    }
+  })
+  res.send("0");
 })
 app.listen(5000, "0.0.0.0", () => console.log("Server dela na portu 5000"));

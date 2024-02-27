@@ -18,7 +18,8 @@ import RegistrationForm from './registrationForm.jsx'
 import LoginForm from './LoginForm.jsx'
 import Creda from './crede.jsx'
 import CredaList from './CredaList.jsx'
-
+import ResetForm from './ResetForm.jsx';
+import ResetPass from './ResetPass.jsx';
 
 function Navbar(){
   const routeChange = () =>{ 
@@ -89,12 +90,14 @@ const root = ReactDOM.createRoot(document.getElementById('root')).render(
   <Navbar/>
   
   <Routes>
-    <Route path="/" element={<><LoginForm/><br/>Še nimaš računa?<br/><a href={import.meta.env.VITE_SITE+"/register"}>Ustvari račun</a></>}/>
+    <Route path="/" element={<><LoginForm/></>}></Route>
     <Route path="/register" element={<><RegistrationForm/><br/>Že imaš račun?<br/><a href={import.meta.env.VITE_SITE+"/"}>Prijavi se</a></>}/>
     <Route path="/:ID" element={<Details/>}/>
     <Route path="/list" element={<><List/><AddButton /></>}></Route>
     <Route path="/crede" element={<><Creda/></>}></Route>
     <Route path="/crede/:ID" element={<><CredaList/></>}></Route>
+    <Route path='/reset' element={<><ResetForm/></>}></Route>
+    <Route path="/reset/:token"element={<><ResetPass/></>}></Route>
   </Routes>
     
   </BrowserRouter>
