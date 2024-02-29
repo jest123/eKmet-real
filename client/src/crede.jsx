@@ -10,6 +10,9 @@ function Creda() {
         method: 'POST',
         headers: { 'Authorization': Cookies.get("token") }
     };
+    if(Cookies.get("token")== undefined){
+        window.location.href = "/";
+      }
     const AddCreda = function () {
         let server = import.meta.env.VITE_API+"/addCreda";
         const [formData, setFormData] = useState({

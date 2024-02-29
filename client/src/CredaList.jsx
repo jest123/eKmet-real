@@ -20,6 +20,9 @@ export default function Details(props) {
     headers: headers,
     body: JSON.stringify(body)
   };
+  if(Cookies.get("token")== undefined){
+    window.location.href = "/";
+  }
   useEffect(() => {
     fetch(server+"/creda",options).then(
       response => response.json()

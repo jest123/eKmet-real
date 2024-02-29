@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import Cookies from 'js-cookie';
 import App from './App.jsx'
 import './index.css'
-import './script.js'
 import './Details.jsx'
 import {
   BrowserRouter,
@@ -66,8 +65,8 @@ function Navbar(){
           <ul className="nav">
             <li className="navbar"><h3><a className='navi' href="/" id="home">eKmet logo</a></h3></li>
             <li className="navbar"><a className='navi' href="/list">Govedo</a></li>
-            <li className="navbar"><a className='navi' href="/">Drobnica</a></li>
-            <li className="navbar"><a className='navi' href="/">Živali</a></li>
+            <li className="navbar"><a className='navi' href="/list">Drobnica</a></li>
+            <li className="navbar"><a className='navi' href="/list">Živali</a></li>
             <li className="navbar"><a className='navi' href="/crede">Črede</a></li>
             <li className="navbar dropdown" id="userIcon" onClick={()=>{document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";}}><a className='navi' href="/"><img className="zivalPic" src="./public/logout.png"></img></a></li>
           </ul>
@@ -76,10 +75,6 @@ function Navbar(){
     }
 }
 function LoginNavbar(){
-  const routeChange = () =>{ 
-    let path = import.meta.env.VITE_SITE; 
-    navigate(path);
-  }
     const [deviceType, setDeviceType] = useState(null);
     let isMobile;
     if(window.innerWidth<768){
@@ -88,7 +83,7 @@ function LoginNavbar(){
     else{
       isMobile=false;
     }
-    console.log(import.meta.env.VITE_HOST);
+    console.log(import.meta.env.VITE_API);
     if(isMobile){
       return(
         <>

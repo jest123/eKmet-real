@@ -12,6 +12,9 @@ export default function List() {
     method: 'POST',
     headers: { 'Authorization': Cookies.get("token") }
   };
+  if(Cookies.get("token")== undefined){
+    window.location.href = "/";
+  }
   useEffect(() => {
     fetch(server + "/list", options).then(
       response => response.json()
@@ -32,9 +35,10 @@ export default function List() {
           setTempData(data);
         });
     }, [server, options, ZivalID]);
+    console.log(tempData.imageURI)
     if(tempData.imageURI==undefined)
       return <img src="./public/image.png" alt="Slika zivali" className='zivalImg' />;
-    return <img src={tempData.imageURI} onerror="this.src='./public/image.png';" alt="Slika zivali" className='zivalImg' />;
+    return <img src={tempData.imageURI} alt="Slika zivali" className='zivalImg' />;
   };
   backendData.forEach((element) => { if (element.SPOL == 'Z') element.SPOL = 'Ženski'; else { element.SPOL = "Moški" } })
   return (

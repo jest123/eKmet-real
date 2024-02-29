@@ -16,6 +16,9 @@ export default function Details(props) {
     method: 'POST',
     headers: { 'Authorization': Cookies.get("token") }
   };
+  if(Cookies.get("token")== undefined){
+    window.location.href = "/";
+  }
   const [formData, setFormData] = useState({
     zivalID: '',
     spol: '',
