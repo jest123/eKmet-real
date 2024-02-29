@@ -126,6 +126,31 @@ app.post('/details', verifyToken, (req, res) => {
     }
   });
 })
+app.post('/image', verifyToken, upload.single('image'), async (req, res) => {
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip + " for " + req.query.ID);
+  sql = "select slika from zivali LEFT JOIN creda using(CredaID) WHERE ZivalID='" + req.query.ID + "' AND zivali.Lastnik='" + req.KMGMID + "';";
+  con.query(sql, async function (err, response) {
+    if (err) throw err;
+    const form = new FormData();
+    form.append('data', response);
+    if (response[0]!=undefined) {
+      if(response[0].slika != undefined){
+      const imageURI = await getImageBase64("./uploads/" + response[0].slika);
+      res.statusCode = 200;
+      res.json({
+        imageURI: imageURI,
+      });
+    } else {
+      res.json({ data: response });
+    }
+    } else {
+      res.json({ data: response });
+    }
+  });
+})
 app.post('/register', urlencodedParser, async (req, res) => {
   try {
     const { username, password, KMGMID } = req.body;
