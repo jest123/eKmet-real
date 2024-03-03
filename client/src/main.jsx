@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import Cookies from 'js-cookie';
 import App from './App.jsx'
@@ -20,95 +20,121 @@ import CredaList from './CredaList.jsx'
 import ResetForm from './ResetForm.jsx';
 import ResetPass from './ResetPass.jsx';
 
-function Navbar(){
-  const routeChange = () =>{ 
-    let path = import.meta.env.VITE_SITE; 
+function Navbar() {
+  const routeChange = () => {
+    let path = import.meta.env.VITE_SITE;
     navigate(path);
   }
-    const [deviceType, setDeviceType] = useState(null);
-    let isMobile;
-    if(window.innerWidth<768){
-      isMobile=true;
-    }
-    else{
-      isMobile=false;
-    }
-    console.log(import.meta.env.VITE_HOST);
-    if(isMobile){
-      return(
-        <>
-          <div className="topnav">
-          <a href="/" className="active">eKmet</a>
-          <div id="myLinks">
-            <a href="/list">Govedo</a>
-            <a href="/list">Drobnica</a>
-            <a href="/list">Živali</a>
-            <a href="/crede">Črede</a>
-            <div onClick={()=>{document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";}}><a className='navi' href="/">Odjava</a></div>
+  const [deviceType, setDeviceType] = useState(null);
+  let isMobile;
+  if (window.innerWidth < 768) {
+    isMobile = true;
+  }
+  else {
+    isMobile = false;
+  }
+  console.log(import.meta.env.VITE_HOST);
+  if (isMobile) {
+    return (
+      <>
+        <nav class="navbar navbar-expand-sm bg-success navbar-dark">
+          <div class="container-fluid">
+            <a class="navbar-brand lead" href="/list">eKmet logo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link text-light fw-bolder" href="/list">Govedo</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light fw-bolder" href="/list">Drobnica</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light fw-bolder" href="/list">Živali</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light fw-bolder" href="/crede">Črede</a>
+                </li>
+              </ul>
+            </div>
           </div>
-          <a className="icon" onClick={()=>{var x = document.getElementById("myLinks");
-    if (x.style.display === "block") {
-      x.style.display = "none";
-    } else {
-      x.style.display = "block";
-    }}}>
-            <i className="fa fa-bars"></i>
-          </a>
-        </div>
-        </>
-      );
-    }
+        </nav>
+      </>
+    );
+  }
 
-    else{
-      return(
-        <>
-          <ul className="nav">
-            <li className="navbar"><h3><a className='navi' href="/" id="home">eKmet logo</a></h3></li>
-            <li className="navbar"><a className='navi' href="/list">Govedo</a></li>
-            <li className="navbar"><a className='navi' href="/list">Drobnica</a></li>
-            <li className="navbar"><a className='navi' href="/list">Živali</a></li>
-            <li className="navbar"><a className='navi' href="/crede">Črede</a></li>
-            <li className="navbar dropdown" id="userIcon" onClick={()=>{document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";}}><a className='navi' href="/"><img className="zivalPic" src="./public/logout.png"></img></a></li>
-          </ul>
-        </>
-      );
-    }
-}
-function LoginNavbar(){
-    const [deviceType, setDeviceType] = useState(null);
-    let isMobile;
-    if(window.innerWidth<768){
-      isMobile=true;
-    }
-    else{
-      isMobile=false;
-    }
-    console.log(import.meta.env.VITE_API);
-    if(isMobile){
-      return(
-        <>
-          <div className="topnav">
-          <a href="http://localhost:5173" className="active">eKmet</a>
-        </div>
-        </>
-      );
-    }
+  else {
+    return (
+      <>
+        <nav class="navbar navbar-expand-sm bg-success navbar-dark d-flex p-2 justify-content-between">
+          <div class="container-fluid w-200">
+            <ul class="navbar-nav d-flex  w-100">
+              <a class="navbar-brand flex-grow-1 lead" href="/list">eKmet logo</a>
+              <li class="nav-item flex-grow-1 fw-bolder lead">
+                <a class="nav-link" href="/list">Govedo</a>
+              </li>
+              <li class="nav-item flex-grow-1 fw-bolder lead">
+                <a class="nav-link" href="/list">Drobnica</a>
+              </li>
+              <li class="nav-item flex-grow-1 fw-bolder lead">
+                <a class="nav-link" href="/list">Živali</a>
+              </li>
+              <li class="nav-item flex-grow-1 fw-bolder lead">
+                <a class="nav-link" href="/crede">Črede</a>
+              </li>
+              <li class="nav-item ml-auto fw-bolder lead">
+                <a class="nav-link" onClick={() => { document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC"; }} href="/">Odjava</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
 
-    else{
-      return(
-        <>
-          <ul className="nav">
-            <li className="navbar"><h3><a className='navi' href="/" id="home">eKmet logo</a></h3></li></ul>
-        </>
-      );
-    }
+      </>
+    );
+  }
 }
-function AddButton(){
-  const [isShown, setShown] = useState(false);  
+function LoginNavbar() {
+  const [deviceType, setDeviceType] = useState(null);
+  let isMobile;
+  if (window.innerWidth < 768) {
+    isMobile = true;
+  }
+  else {
+    isMobile = false;
+  }
+  console.log(import.meta.env.VITE_API);
+  if (isMobile) {
+    return (
+      <>
+        <nav class="navbar navbar-expand-sm bg-success navbar-dark">
+          <div class="container-fluid">
+            <a class="navbar-brand lead m-auto" href="/list">eKmet logo</a>
+          </div>
+        </nav>
+      </>
+    );
+  }
+
+  else {
+    return (
+      <>
+        <nav class="navbar navbar-expand-sm bg-success navbar-dark">
+          <div class="container-fluid">
+            <a class="navbar-brand fw-bolder lead m-auto" href="/">eKmet logo</a>
+          </div>
+        </nav>
+      </>
+    );
+  }
+}
+function AddButton() {
+  const [isShown, setShown] = useState(false);
   return (
     <>
-    {isShown ? <AddForm /> : null}
-    <img src="/src/plus.png" id="add" onClick={() => setShown(!isShown)}></img>
+      {isShown ? <AddForm /> : null}
+      <img src="/src/plus.png" id="add" onClick={() => setShown(!isShown)}></img>
     </>
   );
 }
@@ -116,18 +142,18 @@ function AddButton(){
 
 const root = ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-  
-  
-  <Routes>
-    <Route path="/" element={<><LoginNavbar/><LoginForm/></>}/>
-    <Route path="/register" element={<><LoginNavbar/><RegistrationForm/></>}/>
-    <Route path="/:ID" element={<><Navbar/><Details/></>}/>
-    <Route path="/list" element={<><Navbar/><List/><AddButton /></>}></Route>
-    <Route path="/crede" element={<><Navbar/><Creda/></>}></Route>
-    <Route path="/crede/:ID" element={<><Navbar/><CredaList/></>}></Route>
-    <Route path='/reset' element={<><LoginNavbar/><ResetForm/></>}></Route>
-    <Route path='/reset/:token' element={<><LoginNavbar/><ResetPass/></>}></Route>
-  </Routes>
-    
+
+
+    <Routes>
+      <Route path="/" element={<><LoginNavbar /><LoginForm /></>} />
+      <Route path="/register" element={<><LoginNavbar /><RegistrationForm /></>} />
+      <Route path="/:ID" element={<><Navbar /><Details /></>} />
+      <Route path="/list" element={<><Navbar /><List /><AddButton /></>}></Route>
+      <Route path="/crede" element={<><Navbar /><Creda /></>}></Route>
+      <Route path="/crede/:ID" element={<><Navbar /><CredaList /></>}></Route>
+      <Route path='/reset' element={<><LoginNavbar /><ResetForm /></>}></Route>
+      <Route path='/reset/:token' element={<><LoginNavbar /><ResetPass /></>}></Route>
+    </Routes>
+
   </BrowserRouter>
 )

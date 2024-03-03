@@ -127,10 +127,6 @@ app.post('/details', verifyToken, (req, res) => {
   });
 })
 app.post('/image', verifyToken, upload.single('image'), async (req, res) => {
-  i++;
-  let date = new Date();
-  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-  console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip + " for " + req.query.ID);
   sql = "select slika from zivali LEFT JOIN creda using(CredaID) WHERE ZivalID='" + req.query.ID + "' AND zivali.Lastnik='" + req.KMGMID + "';";
   con.query(sql, async function (err, response) {
     if (err) throw err;
@@ -301,13 +297,13 @@ app.post("/resetPass", urlencodedParser, async (req, res) => {
     console.log(sql);
     con.query(sql, function (err, respo) {
       if (err) throw err;
-      res.redirect("http://localhost:5173/");
     });
 
   });
   sql = "DELETE FROM reset WHERE token='" + req.body.token + "';";
   con.query(sql, function (err, response) {
     if (err) throw err;
+    res.status(200).send;
   });
 })
 app.post("/users", urlencodedParser, (req, res) => {
