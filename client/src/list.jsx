@@ -35,7 +35,6 @@ export default function List() {
           setTempData(data);
         });
     }, [server, options, ZivalID]);
-    console.log(tempData.imageURI)
     if(tempData.imageURI==undefined)
       return <img src="./public/image.png" alt="Slika zivali" className='zivalImg' />;
     return <img src={tempData.imageURI} alt="Slika zivali" className='zivalImg' />;

@@ -82,6 +82,7 @@ export default function Details(props) {
     } catch (error) {
       console.error('Error:', error);
     }
+    window.location.href = "/list";
   }
   const handleChange = (e) => {
     setFormData({
@@ -122,6 +123,7 @@ export default function Details(props) {
     } catch (error) {
       console.error('Error:', error);
     }
+    window.location.reload();
   };
   const fileInputRef = useRef(null);
   const handleImageClick = () => {
@@ -132,10 +134,12 @@ export default function Details(props) {
     selectedFile = e.target.files[0];
     document.getElementById("img").src = URL.createObjectURL(selectedFile)
   };
+  if(formData.opombe=="null"){
+    formData.opombe="";
+  }
   return (
     <>
       <form onSubmit={handleSubmit} method='POST' enctype="multipart/form-data">
-        <Link to="/list"><button>Nazaj</button></Link>
         {formData.slika==undefined ? 
         <img
         id='img'
@@ -151,7 +155,6 @@ export default function Details(props) {
           style={{ cursor: 'pointer' }}
           onerror="this.src='./public/image.png';"
         />}
-        {/* Hidden file input */}
         <input
           type="file"
           ref={fileInputRef}
@@ -161,11 +164,11 @@ export default function Details(props) {
         <h3>Ušesna številka:<br /> {formData.zivalID}</h3>
         <label>Spol: </label><br />
         <select name="spol" value={formData.spol} onChange={handleChange}>
-          <option value='Z'>Z</option>
-          <option value='M'>M</option>
+          <option value='Z'>Ženski</option>
+          <option value='M'>Moški</option>
         </select><br />
         <label>Datum rojstva: </label><br />
-        <input name='datumRojstva' value={formData.datumRojstva} onChange={handleChange}></input><br />
+        <input name='datumRojstva' value={formData.datumRojstva} onChange={handleChange} readOnly></input><br />
         <label>Pasma: </label><br />
         <input name='pasma' value={formData.pasma} onChange={handleChange}></input><br />
         <label>Ime: </label><br />
@@ -182,11 +185,11 @@ export default function Details(props) {
           )))}
         </select><br />
         <label>Opombe:</label><br />
-        <input name="opombe" value={formData.opombe} onChange={handleChange}></input> <br />
-        <input type="submit"></input><br/><br/>
-        <button color='red' onClick={deleteRow}>BRIŠI</button>
-
+        <input name="opombe" value={formData.opombe} onChange={handleChange}></input><br/>
+        <input class="btn btn-success d-inline-block me-5 mt-2" type="submit"></input>
+        <button class="btn btn-danger d-inline mt-2"onClick={deleteRow}>BRIŠI</button>
       </form>
+      <br/>
     </>
   )
 }

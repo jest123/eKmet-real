@@ -63,7 +63,7 @@ function handleDisconnect() {
   });
 }
 handleDisconnect();
-// util function to get the base64 encoded string for passed image.
+
 const readFileAsync = util.promisify(fs.readFile);
 async function getImageBase64(filePath) {
   const image = await readFileAsync(filePath);
@@ -71,7 +71,7 @@ async function getImageBase64(filePath) {
   return `data:image/png;base64,${buffer.toString("base64")}`;
 }
 app.get('/', (req, res) => {
-  console.log('HI');
+  //console.log('HI');
   res.render('index', { text: 'WORLDD' });
 })
 app.post('/list', verifyToken, (req, res) => {
@@ -79,7 +79,7 @@ app.post('/list', verifyToken, (req, res) => {
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " request from " + ip);
-  console.log(req.KMGMID);
+  //console.log(req.KMGMID);
   sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva from zivali WHERE Lastnik='" + req.KMGMID + "';";
   con.query(sql, function (err, response) {
     if (err) throw err;
@@ -88,16 +88,24 @@ app.post('/list', verifyToken, (req, res) => {
 })
 app.post('/add', verifyToken, urlencodedParser, (req, res) => {
   let oce;
+  let spol;
   if (req.body.Oce === undefined) {
     oce = "NULL";
   }
   else
     oce = req.body.Oce;
-  sql = "insert into Zivali(ZivalID,Spol,Pasma,DatumRojstva,Tip,Lastnik,Ime,Mati,Oce) VALUES('" + req.body.ZivalID + "','" + req.body.spol + "','" + req.body.Pasma + "','" + req.body.DatumRojstva + "','Govedo','" + req.KMGMID + "','" + req.body.Ime + "','" + req.body.Mati + "','" + oce + "');";
+  if(req.body.spol==''){
+    spol="M";
+  }
+  else if(req.body.spol=='Z'){
+    spol="Z";
+  }
+  sql = "insert into Zivali(ZivalID,Spol,Pasma,DatumRojstva,Tip,Lastnik,Ime,Mati,Oce,Slika) VALUES('" + req.body.ZivalID + "','" + spol + "','" + req.body.Pasma + "','" + req.body.DatumRojstva + "','Govedo','" + req.KMGMID + "','" + req.body.Ime + "','" + req.body.Mati + "','" + oce + "',NULL);";
   con.query(sql, function (err, response) {
     if (err) throw err;
     let date = new Date();
     let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    //console.log(req.body)
     console.log(req.body.ZivalID + " dodana iz " + ip + " ob " + date.toLocaleString());
     res.statusCode = 200;
     let server = "http://localhost:5173";
@@ -171,7 +179,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
     sql = "SELECT * FROM uporabniki WHERE KMGMID='" + KMGMID + "';";
     con.query(sql, function (err, response) {
       if (response.length <= 0) {
-        return res.status(401).json({ error: 'Authentication failed' });
+        return res.redirect("http://localhost:5173");
       }
       bcrypt.compare(password, response[0].pass).then(passwordMatch => {
         if (!passwordMatch) {
@@ -191,7 +199,7 @@ app.post('/login', urlencodedParser, async (req, res) => {
 app.post('/addCreda', urlencodedParser, verifyToken, async (req, res) => {
   sql = "INSERT INTO Creda(ImeCrede,Opombe,lastnik) VALUES('" + req.body.ImeCrede + "','" + req.body.Opombe + "','" + req.KMGMID + "');";
   con.query(sql, function (err, response) {
-    console.log("ADDEDD")
+    //console.log("ADDEDD")
     if (err) console.log("ERROR " + err);
     res.status(200).send();
   })
@@ -213,8 +221,8 @@ app.post('/creda', urlencodedParser, verifyToken, (req, res) => {
   let date = new Date();
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
   console.log("[" + i + "]" + date.toLocaleString() + " request creda list from " + ip);
-  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva from zivali WHERE Lastnik='" + req.KMGMID + "' AND CredaID='" + req.body.credaID + "';";
-  console.log(sql);
+  sql = "select ZivalID,SPOL,UNIX_TIMESTAMP(DatumRojstva) AS DatumRojstva,slika  from zivali WHERE Lastnik='" + req.KMGMID + "' AND CredaID='" + req.body.credaID + "';";
+  //console.log(sql);
   con.query(sql, function (err, response) {
     if (err) throw err;
     res.json(response);
@@ -227,7 +235,7 @@ app.post('/update', upload.single("img"), verifyToken, (req, res) => {
   console.log("[" + i + "]" + date.toLocaleString() + " update request from " + ip);
   let x = JSON.parse(req.body.data)
   sql = "UPDATE Zivali SET spol='" + x.spol + "',pasma='" + x.pasma + "',ime='" + x.ime + "',mati='" + x.mati + "',oce='" + x.oce + "',credaID='" + x.credaID + "',Opombe='" + x.opombe + "'" + (req.file != undefined ? ",slika='" + req.file.filename + "'" : "") + " WHERE ZivalID='" + x.zivalID + "';";
-  console.log(sql)
+  //console.log(sql)
   con.query(sql, function (err, response) {
     if (err) throw err;
     res.send("MHMMM");
@@ -285,16 +293,15 @@ app.post("/delete", urlencodedParser, verifyToken, (req, res) => {
   sql = "DELETE FROM zivali WHERE ZivalID='" + req.body.zivalID + "';";
   con.query(sql, function (err, response) {
     if (err) throw err;
-
+    res.redirect("http://localhost:5173/list");
   })
-  res.redirect("http://localhost:5173/list");
+  
 })
 app.post("/resetPass", urlencodedParser, async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.pass, 10);
   sql = "SELECT * FROM reset INNER JOIN uporabniki ON reset.email=uporabniki.user WHERE token=" + req.body.token + ";";
   con.query(sql, function (err, response) {
     sql = "UPDATE uporabniki SET pass='" + hashedPassword + "' WHERE KMGMID='" + response[0].KMGMID + "';";
-    console.log(sql);
     con.query(sql, function (err, respo) {
       if (err) throw err;
     });
@@ -303,7 +310,7 @@ app.post("/resetPass", urlencodedParser, async (req, res) => {
   sql = "DELETE FROM reset WHERE token='" + req.body.token + "';";
   con.query(sql, function (err, response) {
     if (err) throw err;
-    res.status(200).send;
+    res.redirect("http://localhost:5173/");
   });
 })
 app.post("/users", urlencodedParser, (req, res) => {
@@ -319,4 +326,15 @@ app.post("/users", urlencodedParser, (req, res) => {
     res.send(found);
   });
 });
+app.post("/deleteCreda",verifyToken, (req, res) => {
+  i++;
+  let date = new Date();
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log("[" + i + "]" + date.toLocaleString() + " deleteCreda request from " + ip);
+  sql = "DELETE FROM creda WHERE credaID='" + req.body.credaID + "';";
+  con.query(sql, function (err, response) {
+    if (err) throw err;
+    res.redirect("http://localhost:5173/creda");
+  })
+})
 app.listen(5000, "0.0.0.0", () => console.log("Server dela na portu 5000"));

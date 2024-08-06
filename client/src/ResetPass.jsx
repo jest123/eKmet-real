@@ -23,7 +23,8 @@ function ResetPass() {
                     pass:document.getElementsByName("pass")[0].value,
                     token:token
                 })
-            })
+                
+            }).then(()=> window.location.href="http://localhost:5173")
         
     }
     useEffect(() => {
@@ -55,7 +56,7 @@ function ResetPass() {
         );
     }
     else {
-        return (<h1>Napaka</h1>);
+        window.location.href="http://localhost:5173/";
     }
 }
 export default ResetPass;

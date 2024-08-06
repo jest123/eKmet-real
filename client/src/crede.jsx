@@ -37,6 +37,7 @@ function Creda() {
             } catch (error) {
                 console.error('Error:', error);
             }
+            window.location.href = "/crede";
         };
         const handleChange = (e) => {
             setFormData({
@@ -46,7 +47,6 @@ function Creda() {
         };
         return (
             <div className='addDiv'>
-                <img src='./public/exit.png' id="exit" onClick={() => { document.getElementById("root").removeChild(document.getElementsByClassName("addDiv")[0]); }}></img>
                 <form method='POST' onSubmit={handleSubmit}>
                     <label >Ime črede:</label><br />
                     <input name="ImeCrede" placeholder='Ime črede' value={formData.ImeCrede} onChange={handleChange} required></input><br />
@@ -62,7 +62,7 @@ function Creda() {
         return (
           <>
           {isShown ? <AddCreda /> : null}
-          <img src="/src/plus.png" id="add" onClick={() => setShown(!isShown)}></img>
+          <img  class="position-fixed bottom-0 end-0 m-3 img-fluid" src="/src/plus.png" id="add" onClick={() => setShown(!isShown)}></img>
           </>
         );
       }
@@ -90,7 +90,7 @@ function Creda() {
         <>
             {(backendData.map((item) => (
                 <Link to={`/crede/${item.CredaID}`}>
-                    <div className='creda' id={item.ImeCrede}>
+                    <div className='creda btn btn-secondary mt-2 ms-2' id={item.ImeCrede}>
                         <b>{item.ImeCrede}</b>
                         <p>{item.Opombe}</p>
                     </div>

@@ -62,19 +62,15 @@
     overflow: hidden;
   }
   #add{
-    position:sticky;
-    left:93%;
-    bottom:3%;
     width:5%;
-    height:5%;
-    display:inline-block;
+    height:10%;
   }
   .addDiv{
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 9999; /* Use a high z-index value to ensure it's on top of other elements */
+    z-index: 9999;
     width: 20%;
     height:50%;
     background-color: white;
@@ -130,7 +126,6 @@
 
   }
 
-  /* Change the link color to #111 (black) on hover */
   .navi:hover {
   background-color: #111;
   }
@@ -175,7 +170,7 @@ margin:10px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 9999; /* Use a high z-index value to ensure it's on top of other elements */
+    z-index: 9999;
     width: fit-content;
     height:50%;
     background-color: white;
@@ -201,7 +196,6 @@ a{
 #myLinks{
 	display:none;
 }
-/* Hide the links inside the navigation menu (except for logo/home) */
 #myLinks .hidden {
   display: none;
   height:0px;
@@ -216,8 +210,6 @@ a{
     display 1s,
     height 1s allow-discrete;
 }
-/* Hide the links inside the navigation menu (except for logo/home) */
-/* Style navigation menu links */
 .topnav a {
   color: white;
   padding: 14px 16px;
@@ -226,7 +218,6 @@ a{
   display: block;
 }
 
-/* Style the hamburger menu */
 .topnav a.icon {
   background: black;
   display: block;
@@ -235,7 +226,6 @@ a{
   top: 0;
 
 }
-/* Style the active link (or home/logo) */
 .active {
   background-color: #49B265;
   color: white;

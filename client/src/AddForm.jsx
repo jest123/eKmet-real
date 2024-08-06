@@ -30,6 +30,7 @@ export default function AddForm(){
     } catch (error) {
       console.error('Error:', error);
     }
+    window.location="/list";
   };
   const handleChange = (e) => {
     setFormData({
@@ -39,7 +40,6 @@ export default function AddForm(){
   };
     return(
       <div className='addDiv'>
-          <img src='./public/exit.png' id="exit" onClick={() => {document.getElementById("root").removeChild(document.getElementsByClassName("addDiv")[0]);}}></img>
           <form method='POST' onSubmit={handleSubmit}>
               <label >Ušesna številka:</label><br/>
               <input name="ZivalID" placeholder='Ušesna številka' value={formData.ZivalID} onChange={handleChange} required></input><br/>

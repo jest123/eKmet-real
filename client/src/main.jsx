@@ -39,7 +39,7 @@ function Navbar() {
       <>
         <nav class="navbar navbar-expand-sm bg-success navbar-dark">
           <div class="container-fluid">
-            <a class="navbar-brand lead" href="/list">eKmet logo</a>
+            <a class="navbar-brand lead" href="/list">eKmet</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -71,13 +71,7 @@ function Navbar() {
         <nav class="navbar navbar-expand-sm bg-success navbar-dark d-flex p-2 justify-content-between">
           <div class="container-fluid w-200">
             <ul class="navbar-nav d-flex  w-100">
-              <a class="navbar-brand flex-grow-1 lead" href="/list">eKmet logo</a>
-              <li class="nav-item flex-grow-1 fw-bolder lead">
-                <a class="nav-link" href="/list">Govedo</a>
-              </li>
-              <li class="nav-item flex-grow-1 fw-bolder lead">
-                <a class="nav-link" href="/list">Drobnica</a>
-              </li>
+              <a class="navbar-brand flex-grow-1 lead" href="/list">eKmet</a>
               <li class="nav-item flex-grow-1 fw-bolder lead">
                 <a class="nav-link" href="/list">Živali</a>
               </li>
@@ -110,7 +104,7 @@ function LoginNavbar() {
       <>
         <nav class="navbar navbar-expand-sm bg-success navbar-dark">
           <div class="container-fluid">
-            <a class="navbar-brand lead m-auto" href="/list">eKmet logo</a>
+            <a class="navbar-brand lead m-auto" href="/list">eKmet</a>
           </div>
         </nav>
       </>
@@ -122,7 +116,7 @@ function LoginNavbar() {
       <>
         <nav class="navbar navbar-expand-sm bg-success navbar-dark">
           <div class="container-fluid">
-            <a class="navbar-brand fw-bolder lead m-auto" href="/">eKmet logo</a>
+            <a class="navbar-brand fw-bolder lead m-auto" href="/">eKmet</a>
           </div>
         </nav>
       </>
@@ -134,7 +128,7 @@ function AddButton() {
   return (
     <>
       {isShown ? <AddForm /> : null}
-      <img src="/src/plus.png" id="add" onClick={() => setShown(!isShown)}></img>
+      <img class="position-fixed bottom-0 end-0 m-3 img-fluid" src="/src/plus.png" id="add" onClick={() => setShown(!isShown)}></img>
     </>
   );
 }

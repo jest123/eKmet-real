@@ -8,7 +8,7 @@ function verifyToken(req, res, next) {
         req.KMGMID = decoded.KMGMID;
         next();
     } catch (error) {
-        res.status(401).redirect("http://localhost:5173/");
+        res.redirect("http://localhost:5173/");
     }
 }
 module.exports = verifyToken;
